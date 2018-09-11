@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3674E3</color>
+    <color name="colorPrimaryDark">#3674E3</color>
+    <color name="colorAccent">#3674E3</color>
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="white_80">#ccffffff</color>
+    <color name="white_90">#E5ffffff</color>
+    <color name="white_20">#33ffffff</color>
+
+    <color name="transparent">#00000000</color>
+    <color name="vip_main_divider">#50ffffff</color>
+
+    <color name="color_gray_light">#e6e6e6</color>
+    <color name="color_vip_month">#757575</color>
+    <color name="color_vip_blue">#4A90E2</color>
+    <color name="color_vip_blue_90">#E54A90E2</color>
+
+    <color name="vip_ad_tip_color">#dd18ac8f</color>
+    <color name="color_vip_guide_gray">#757575</color>
+    <color name="color_vip_guide_divide_line">#3330C7A4</color>
+    <color name="color_vip_guide_commitment">#757575</color>
+    <color name="color_vip_try_free">#F78223</color>
+    <color name="color_vip_try_free_80">#CCF78223</color>
+    <color name="color_vip_try_free_90">#E5F78223</color>
+
+    <color name="vip_bg">#3674E3</color>
+    <color name="golden">#FEE237</color>
+    <color name="golden_80">#CCFEE237</color>
+    <color name="jike_text">#424242</color>
+    <color name="jike_bg">#ECEFF1</color>
+</resources>
+

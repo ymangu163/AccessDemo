@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AccessDemo</string>
+    <string name="haha_zh">哈哈</string>
+    <string name="stop_app_text">强行停止</string>
+    <string name="dialog_ok">确定</string>
+    <string name="get_register_code">可以通过以下方式获取注册码：\n1. 加入Q群：706220324 联系群主\n2. 添加微信联系：toolmaster9527</string>
+</resources>

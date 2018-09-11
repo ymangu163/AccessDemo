@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">AccessDemo</string>
+    <string name="stop_app_text">FORCE STOP</string>
+    <string name="dialog_ok">OK</string>
+</resources>

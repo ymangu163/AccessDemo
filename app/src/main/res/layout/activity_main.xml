@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/vip_bg"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    tools:context="ym.ha.script.MainActivity">
+
+    <TextView
+        android:id="@+id/get_register_code_tv"
+        android:layout_width="180dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/selector_golden"
+        android:gravity="center"
+        android:text="获取注册码"
+        android:textColor="@color/jike_text"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/register_title"
+        style="@style/actionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="注册码:"
+        app:layout_constraintTop_toBottomOf="@+id/get_register_code_tv" />
+
+    <EditText
+        android:id="@+id/register_et"
+        android:layout_width="160dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/shape_code_msg"
+        app:layout_constraintBottom_toBottomOf="@+id/register_title"
+        app:layout_constraintLeft_toRightOf="@+id/register_title"
+        app:layout_constraintRight_toLeftOf="@+id/register_submit_tv"
+        app:layout_constraintTop_toTopOf="@+id/register_title"
+        android:paddingStart="10dp"
+        style="@style/actionStyle"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/register_submit_tv"
+        style="@style/actionStyle"
+        android:layout_width="100dp"
+        android:layout_height="42dp"
+        android:background="@drawable/selector_corner_transparent"
+        android:gravity="center"
+        android:text="注 册"
+        app:layout_constraintBottom_toBottomOf="@+id/register_title"
+        app:layout_constraintLeft_toRightOf="@+id/register_et"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/register_title" />
+
+    <TextView
+        android:id="@+id/config_title"
+        style="@style/actionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="是否开启夜间屏蔽 (建议开启，以防封号)"
+        app:layout_constraintTop_toBottomOf="@+id/register_title" />
+
+    <TextView
+        android:id="@+id/config_desc"
+        style="@style/actionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="（24小时制）"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/config_title"
+        android:layout_marginTop="8dp"
+        />
+
+    <CheckBox
+        android:id="@+id/mask_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:buttonTint="@color/color_vip_try_free"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="@+id/config_desc"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/config_desc" />
+
+    <EditText
+        android:id="@+id/mask_start_tv"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/shape_code_msg"
+        app:layout_constraintBottom_toBottomOf="@+id/config_desc"
+        app:layout_constraintLeft_toRightOf="@+id/mask_box"
+        app:layout_constraintTop_toTopOf="@+id/config_desc"
+        android:paddingStart="10dp"
+        style="@style/actionStyle"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@color/white"
+        android:text="00:00"
+        />
+
+    <TextView
+        android:id="@+id/mask_unit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/config_desc"
+        app:layout_constraintLeft_toRightOf="@+id/mask_start_tv"
+        app:layout_constraintTop_toTopOf="@+id/config_desc"
+        android:text="到"
+        style="@style/actionStyle"
+        android:layout_margin="10dp"
+        />
+
+    <EditText
+        android:id="@+id/mask_end_tv"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/shape_code_msg"
+        app:layout_constraintBottom_toBottomOf="@+id/config_desc"
+        app:layout_constraintLeft_toRightOf="@+id/mask_unit"
+        app:layout_constraintTop_toTopOf="@+id/config_desc"
+        app:layout_constraintRight_toLeftOf="@+id/config_desc"
+        android:paddingStart="10dp"
+        style="@style/actionStyle"
+        android:cursorVisible="true"
+        android:textCursorDrawable="@color/white"
+        android:text="08:00"
+        />
+
+    <TextView
+        android:id="@+id/open_access_tv"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:background="@drawable/selector_corner_transparent"
+        android:gravity="center"
+        android:text="开启脚本"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/config_desc"
+        app:layout_constraintRight_toLeftOf="@+id/open_haha_tv"
+        android:layout_marginTop="60dp"
+        />
+
+    <TextView
+        android:id="@+id/open_haha_tv"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:background="@drawable/selector_corner_transparent"
+        android:gravity="center"
+        android:text="启动哈哈"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintLeft_toRightOf="@+id/open_access_tv"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/open_access_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/open_access_tv"
+
+        />
+
+</android.support.constraint.ConstraintLayout>
