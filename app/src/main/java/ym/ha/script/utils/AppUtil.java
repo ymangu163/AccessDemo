@@ -4,8 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import java.security.MessageDigest;
+import java.util.Calendar;
 
 import ym.ha.script.activity.AppContext;
 
@@ -29,6 +33,39 @@ public class AppUtil {
         }
     }
 
+    public static boolean canOpenApp() {
+        if (!AppSharePref.getInstance().getNightMask()) {
+            return true;
+        }
+
+        Calendar calendar = Calendar.getInstance();//
+        int curHor = calendar.get(Calendar.HOUR_OF_DAY);//时
+        int curMin = calendar.get(Calendar.MINUTE);//分
+        String startTime = AppSharePref.getInstance().getMaskStartTime();
+        String endTime = AppSharePref.getInstance().getMaskEndTime();
+        String[] start1 = startTime.split(":");
+        String[] end1 = endTime.split(":");
+        if (curHor < Integer.valueOf(start1[0])) {
+            return true;
+        } else if (curHor == Integer.valueOf(start1[0])) {
+            if (curMin < Integer.valueOf(start1[1])) {
+                return true;
+            } else {
+                return false;
+            }
+        } else if (curHor > Integer.valueOf(end1[0])) {
+            return true;
+        } else if (curHor == Integer.valueOf(end1[0])) {
+            if (curMin < Integer.valueOf(end1[1])) {
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
 
     public static void stopApp() {
         Intent intent = new Intent();
@@ -37,6 +74,7 @@ public class AppUtil {
         Uri uri = Uri.fromParts("package", "com.lswl.qfq", null);
         intent.setData(uri);
         AppContext.getInstance().startActivity(intent);
+        Log.e("gao", "stop time :" + System.currentTimeMillis());
     }
 
     public static void openKeybord(View view) {
@@ -53,4 +91,20 @@ public class AppUtil {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
+
+    public static String getMd5(String _key){
+        byte[] hash;
+        try {
+            hash = MessageDigest.getInstance("MD5").digest(_key.getBytes("UTF-8"));
+            StringBuilder hex = new StringBuilder(hash.length * 2);
+            for (byte b : hash) {
+                if ((b & 0xFF) < 0x10) hex.append("0");
+                hex.append(Integer.toHexString(b & 0xFF));
+            }
+            return hex.toString();
+        }catch (Exception e) {
+            return null;
+        }
+    }
+
 }

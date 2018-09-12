@@ -240,7 +240,7 @@ public class BaseAccessibilityService extends AccessibilityService {
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public void clickTextViewByID(String id) {
+    public void clickViewByID(String id) {
         AccessibilityNodeInfo accessibilityNodeInfo = getRootInActiveWindow();
         if (accessibilityNodeInfo == null) {
             return;
@@ -248,7 +248,7 @@ public class BaseAccessibilityService extends AccessibilityService {
         List<AccessibilityNodeInfo> nodeInfoList = accessibilityNodeInfo.findAccessibilityNodeInfosByViewId(id);
         if (nodeInfoList != null && !nodeInfoList.isEmpty()) {
             for (AccessibilityNodeInfo nodeInfo : nodeInfoList) {
-                if (nodeInfo != null) {
+                if (nodeInfo != null && nodeInfo.isClickable()) {
                     performViewClick(nodeInfo);
                     break;
                 }
@@ -311,7 +311,6 @@ public class BaseAccessibilityService extends AccessibilityService {
             }
         }, null);
     }
-
 
 
     @Override

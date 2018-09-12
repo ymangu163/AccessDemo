@@ -1,6 +1,7 @@
 package ym.ha.script.activity;
 
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
 
@@ -37,5 +38,6 @@ public class AppContext extends MultiDexApplication {
 
     public void setLaunchTime(long launchTime) {
         mLaunchTime = launchTime;
+        Log.e("gao", "launch time :" + launchTime);
     }
 }

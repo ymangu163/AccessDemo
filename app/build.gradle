@@ -7,15 +7,51 @@ android {
         applicationId "ym.ha.script"
         minSdkVersion 21
         targetSdkVersion 26
-        versionCode 111
+        versionCode 112
         versionName "1.0"
         multiDexEnabled true
     }
+
+    signingConfigs {
+        debug {
+            storeFile file("./../../candy.jks")
+            storePassword 'Cdnal36ntedr'
+            keyAlias 'candy'
+            keyPassword 'Cdnal36ntedr'
+        }
+        release {
+            storeFile file("./../../candy.jks")
+            storePassword 'Cdnal36ntedr'
+            keyAlias 'candy'
+            keyPassword 'Cdnal36ntedr'
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            zipAlignEnabled true
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == 'release') {
+                def apkName = "HahaScript.apk"
+                outputFileName = apkName
+            } else {
+                def apkName = "HahaScript.apk"
+                outputFileName = apkName
+            }
+        }
+
+    }
+
+    lintOptions {
+        disable 'MissingTranslation'
     }
 }
 

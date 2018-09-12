@@ -2,6 +2,7 @@ package ym.ha.script.service;
 
 import android.os.Build;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -10,7 +11,9 @@ import java.util.Random;
 
 import ym.ha.script.R;
 import ym.ha.script.activity.AppContext;
+import ym.ha.script.utils.AppSharePref;
 import ym.ha.script.utils.AppUtil;
+import ym.ha.script.utils.ToastUtils;
 
 
 /**
@@ -24,8 +27,9 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
     private final int MSG_ENTER_MAIN = 0x10;
     private final int MSG_SCROLL_VIDEO = 0x11;
     private final int MSG_START_HAHA = 0x12;
+    private final int MSG_GET_HAHA_ID = 0x13;
 
-    private final long SHOW_VIDEO_ALL_TIME = 45 * 60 * 1000;
+    private long mVideoAllTime = 45 * 60 * 1000;
 
     private boolean mIsLauned;
     private Random mRandom = new Random();
@@ -48,51 +52,40 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
 
                 break;
             case AccessibilityEvent.TYPE_VIEW_SCROLLED:
-//                Log.e(TAG, event.toString());
-//                String className2 = event.getClassName().toString();
-//                handleScrolled(className2);
 
                 break;
 
-        }
-    }
-
-    private void handleScrolled(String className) {
-        switch (className) {
-            case "android.support.v4.view.ViewPager":
-                scrollTimes++;
-                if (scrollTimes % 4 == 0) {
-                    mHandler.removeCallbacks(null);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            AccessibilityNodeInfo videoContainerInfo = findViewByID("com.lswl.qfq:id/vvp");
-                            int count = videoContainerInfo.getChildCount();
-                            Log.e("vscroll", "" + count);
-                        }
-                    }, 2000);
-                }
-                break;
         }
     }
 
     private void handlePages(String className) {
+        if (!AppSharePref.getInstance().getAuthorized()) {
+            ToastUtils.showToastForLong(getApplication(), "请先注册");
+            return;
+        }
+
         switch (className) {
             case "com.lswl.qfq.activity.HaHaSplashActivity":
                 mIsLauned = true;
+                int randomTime = getRandomDelay(65, 45);
+                mVideoAllTime = randomTime * 60;
                 AppContext.getInstance().setLaunchTime(System.currentTimeMillis());
                 break;
-            case "com.lswl.qfq.activity.MainActivity":
-                long delayTime = 1000;
-                if (mIsLauned) {
-                    delayTime = 5000;
+            case "com.lswl.qfq.mvp.activity.HomeActivity":
+                if (AppSharePref.getInstance().getAuthoChecked()) {
+                    long delayTime = 1000;
+                    if (mIsLauned) {
+                        delayTime = 5000;
+                    }
+                    mHandler.sendEmptyMessageDelayed(MSG_ENTER_MAIN, delayTime);
+                    mIsLauned = false;
+                } else {
+                    checkAuthority();
                 }
-                mHandler.sendEmptyMessageDelayed(MSG_ENTER_MAIN, delayTime);
-                mIsLauned = false;
                 break;
             case "com.lswl.qfq.activity.VideoActivity":
                 mIsLauned = false;
-                int videoDaley = getVideoDelay(50, 30);
+                int videoDaley = getRandomDelay(50, 30);
                 mHandler.sendEmptyMessageDelayed(MSG_SCROLL_VIDEO, videoDaley);
                 break;
             case "com.android.settings.applications.InstalledAppDetailsTop":
@@ -104,7 +97,7 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
                 break;
             case "com.lswl.qfq.views.CaptchDialog":
                 AppUtil.stopApp();
-                int startDelay = getVideoDelay(180, 60);
+                int startDelay = getRandomDelay(180, 60);
                 Log.e(TAG, startDelay + " 秒后重启");
                 mHandler.removeCallbacksAndMessages(null);
                 mHandler.sendEmptyMessageDelayed(MSG_START_HAHA, startDelay);
@@ -117,6 +110,10 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
     private void autoStop() {
         AccessibilityNodeInfo info = findViewByText(getString(R.string.stop_app_text), true);
         if (info == null) {
+            info = findViewByText(getString(R.string.stop_app_text2), true);
+        }
+
+        if (info == null) {
             return;
         }
         if (info.isEnabled()) {
@@ -128,6 +125,12 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
 
     }
 
+    private void checkAuthority() {
+        clickViewByID("com.lswl.qfq:id/rBtnMine");
+        mHandler.sendEmptyMessageDelayed(MSG_GET_HAHA_ID, 500);
+
+    }
+
     /**
      * 视频延时，注意要* 1000
      *
@@ -135,7 +138,7 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
      * @param min
      * @return
      */
-    private int getVideoDelay(int max, int min) {
+    private int getRandomDelay(int max, int min) {
         int delay = mRandom.nextInt(max - min) + min;
         Log.e(TAG, "delay: " + delay);
         return delay * 1000;
@@ -149,16 +152,6 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                AccessibilityNodeInfo listViewInfo = findViewByClass("android.widget.ListView");
-//                if (listViewInfo != null) {
-//                    AccessibilityNodeInfo groupInfo = listViewInfo.getParent();
-//
-////                    listViewInfo.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-////                    groupInfo.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-////                    groupInfo.performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-//                    performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
-//                    performGlobalAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
-//                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     slideVertical(6, 14);
                 }
@@ -166,7 +159,6 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
             }
         }, 2000);
     }
-
 
 
     @Override
@@ -184,13 +176,50 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
                 scrollVideos();
                 break;
             case MSG_START_HAHA:
-                AppUtil.openApp();
+                if (AppUtil.canOpenApp()) {
+                    AppUtil.openApp();
+                } else {
+                    mHandler.removeCallbacksAndMessages(null);
+                    mHandler.sendEmptyMessageDelayed(MSG_START_HAHA, 10 * 60 * 1000);
+                }
+                break;
+            case MSG_GET_HAHA_ID:
+                getHahaId();
                 break;
 
         }
     }
 
+    private void getHahaId() {
+        AccessibilityNodeInfo idInfo = findViewByID("com.lswl.qfq:id/user_number_tv");
+        if (idInfo == null) {
+            mHandler.sendEmptyMessageDelayed(MSG_GET_HAHA_ID, 500);
+            return;
+        }
+        String hahaId = idInfo.getText().toString();
+        String savedId = AppSharePref.getInstance().getHahaId();
+        if (TextUtils.equals(hahaId, savedId)) {
+            AppSharePref.getInstance().setAuthoChecked(true);
+            clickViewByID("com.lswl.qfq:id/rBtnWatchVideo");
+            mHandler.sendEmptyMessageDelayed(MSG_ENTER_MAIN, 1000);
+        } else {
+            AppSharePref.getInstance().setAuthoChecked(false);
+            ToastUtils.showToastForLong(this, "与您注册的HaHa ID 不符");
+        }
+
+    }
+
     private void enterMainActivity() {
+        if (!AppSharePref.getInstance().getAuthorized()) {
+            ToastUtils.showToastForLong(this, "请先注册");
+            return;
+        }
+
+        if (!AppSharePref.getInstance().getAuthoChecked()) {
+            ToastUtils.showToastForLong(this, "与您注册的HaHa ID 不符");
+            return;
+        }
+
         AccessibilityNodeInfo recyclerViewInfo = findViewByID("com.lswl.qfq:id/myxRecyclerView");
         if (recyclerViewInfo == null) {
             mHandler.sendEmptyMessageDelayed(MSG_ENTER_MAIN, 1000);
@@ -213,9 +242,10 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
     }
 
     private void scrollVideos() {
-        if (System.currentTimeMillis() - AppContext.getInstance().getLaunchTime() >= SHOW_VIDEO_ALL_TIME) {
+        if (System.currentTimeMillis() - AppContext.getInstance().getLaunchTime() >= mVideoAllTime) {
+            Log.e(TAG, "mVideoAllTime: " + mVideoAllTime);
             AppUtil.stopApp();
-            int startDelay = getVideoDelay(180, 60);
+            int startDelay = getRandomDelay(180, 60);
             Log.e(TAG, startDelay + " 秒后重启");
             mHandler.removeCallbacksAndMessages(null);
             mHandler.sendEmptyMessageDelayed(MSG_START_HAHA, startDelay);
@@ -235,12 +265,16 @@ public class HaHaAccessibilityService extends BaseAccessibilityService {
                 @Override
                 public void run() {
                     AccessibilityNodeInfo videoContainerInfo = findViewByID("com.lswl.qfq:id/vvp");
+                    if (videoContainerInfo == null) {
+                        mHandler.sendEmptyMessageDelayed(MSG_SCROLL_VIDEO, 4000);
+                        return;
+                    }
                     int childCount = videoContainerInfo.getChildCount();
                     int videoDaley = 3400;
                     if (mLastChildCount == (childCount + 1)) {
                         videoDaley = 3400;
                     } else {
-                        videoDaley = getVideoDelay(40, 26);
+                        videoDaley = getRandomDelay(40, 26);
                     }
                     mLastChildCount = childCount;
                     mHandler.sendEmptyMessageDelayed(MSG_SCROLL_VIDEO, videoDaley);
